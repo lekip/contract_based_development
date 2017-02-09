@@ -35,11 +35,11 @@ namespace rock_scissor_paper_game
     class Program
     {
         /*
-        List<Weapon> defaultRules = new List<Weapon>()
+        List<Rule> defaultRules = new List<Rule>()
         {
-            new Weapon(HandType.scissor, new List<HandType>() { HandType.paper } ),
-            new Weapon(HandType.paper, new List<HandType>() { HandType.rock }),
-            new Weapon(HandType.rock, new List<HandType>() { HandType.scissor } )
+            new Weapon(Weapon.scissor, new List<Weapon>() { HandType.paper } ),
+            new Weapon(Weapon.paper, new List<Weapon>() { HandType.rock }),
+            new Weapon(Weapon.rock, new List<Weapon>() { HandType.scissor } )
         };
         */
         List<Rule> defaultRules = new List<Rule>()
@@ -49,8 +49,7 @@ namespace rock_scissor_paper_game
             new Rule(Weapon.rock, new List<Weapon>() { Weapon.scissor, Weapon.waterbaloon }),
             new Rule(Weapon.fire, new List<Weapon>() { Weapon.paper, Weapon.rock, Weapon.scissor}),
             new Rule(Weapon.waterbaloon, new List<Weapon>() { Weapon.fire}),
-        };
-        
+        };        
         
         public Weapon enterValue()
         /*
@@ -62,8 +61,6 @@ namespace rock_scissor_paper_game
         
         */
         {
-
-
             int nr = 0;
             var values = Enum.GetValues(typeof(Weapon));
             foreach (Weapon weapon in values)
