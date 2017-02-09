@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace rock_scissor_paper_game
 {
-    public enum Weapon { scissor, rock, paper };
+    public enum HandType { scissor, rock, paper, fire, waterbaloon };
 
-    public class Rule
+    public class Weapon
     {
-        public Weapon weapon;
-        public Weapon defeats;
+        public HandType weapon;
+        public List<HandType> defeats;
 
-        public Rule(Weapon weapon, Weapon defeats)
+        public Weapon(HandType weapon, List<HandType> defeats)
         {
             this.weapon = weapon;
             this.defeats = defeats;
@@ -23,7 +23,7 @@ namespace rock_scissor_paper_game
     public class Player
     {
         public String name;
-        public Weapon value;
+        public HandType value;
 
         public Player(String Name)
         {
@@ -35,14 +35,14 @@ namespace rock_scissor_paper_game
             Console.WriteLine("Choose " + this.name + " value:");
 
             int nr = 0;
-            var values = Enum.GetValues(typeof(Weapon));
-            foreach (Weapon weapon in values)
+            var values = Enum.GetValues(typeof(HandType));
+            foreach (HandType weapon in values)
             {
                 nr++;
                 Console.WriteLine(nr + ")" + weapon.ToString());
             }
-            int sel = int.Parse(Console.ReadLine());
-            this.value = (Weapon) (values.GetValue(sel - 1));
+            int sel = int.Parse(Console.ReadKey(true).KeyChar.ToString());
+            this.value = (HandType) (values.GetValue(sel - 1));
             
         }
 
@@ -50,25 +50,35 @@ namespace rock_scissor_paper_game
 
     class Program
     {
-        List<Rule> rules = new List<Rule>()
+        /*
+        List<Weapon> defaultRules = new List<Weapon>()
         {
-            new Rule(Weapon.scissor, Weapon.paper),
-            new Rule(Weapon.paper, Weapon.rock),
-            new Rule(Weapon.rock, Weapon.scissor)
+            new Weapon(HandType.scissor, new List<HandType>() { HandType.paper } ),
+            new Weapon(HandType.paper, new List<HandType>() { HandType.rock }),
+            new Weapon(HandType.rock, new List<HandType>() { HandType.scissor } )
+        };
+        */
+        List<Weapon> defaultRules = new List<Weapon>()
+        {
+            new Weapon(HandType.scissor, new List<HandType>() { HandType.paper, HandType.waterbaloon } ),
+            new Weapon(HandType.paper, new List<HandType>() { HandType.rock, HandType.waterbaloon }),
+            new Weapon(HandType.rock, new List<HandType>() { HandType.scissor, HandType.waterbaloon }),
+            new Weapon(HandType.fire, new List<HandType>() { HandType.paper, HandType.rock, HandType.scissor}),
+            new Weapon(HandType.waterbaloon, new List<HandType>() { HandType.fire}),
         };
 
 
-        public String findWinner(Player player1, Player player2)
+        public String findWinner(Player player1, Player player2, List<Weapon> rules)
         {
             if (player1.value.Equals(player2.value))
             {
                 return "draw";
             };
 
-            foreach (Rule r in rules)
+            foreach (Weapon r in rules)
             {
-                if (r.weapon.Equals(player1.value) && 
-                    r.defeats.Equals(player2.value))
+                if (r.weapon.Equals(player1.value) &&
+                    (r.defeats.Contains(player2.value)))
                     return player1.name;
             }
 
@@ -98,7 +108,7 @@ namespace rock_scissor_paper_game
             Console.WriteLine("Value of " + player1.name + ": " + player1.value.ToString());
             Console.WriteLine("Value of " + player2.name + ": " + player2.value.ToString());
 
-            Console.WriteLine(findWinner(player1,player2));
+            Console.WriteLine(findWinner(player1,player2, defaultRules));
 
             Console.ReadLine();
         }
