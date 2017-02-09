@@ -33,19 +33,17 @@ namespace rock_scissor_paper_game
         public void enterValue()
         {
             Console.WriteLine("Choose " + this.name + " value:");
-            Console.WriteLine("S) Scissors");
-            Console.WriteLine("R) Rock");
-            Console.WriteLine("P) Paper");
-            String k;
-            do
+
+            int nr = 0;
+            var values = Enum.GetValues(typeof(Weapon));
+            foreach (Weapon weapon in values)
             {
-                k = Console.ReadKey(true).KeyChar.ToString().ToUpper();
-            } while (k != "S" &&
-                    k != "R" &&
-                    k != "P");
-            if (k == "S") { this.value = Weapon.scissor; };
-            if (k == "R") { this.value = Weapon.rock; };
-            if (k == "P") { this.value = Weapon.paper; };            
+                nr++;
+                Console.WriteLine(nr + ")" + weapon.ToString());
+            }
+            int sel = int.Parse(Console.ReadLine());
+            this.value = (Weapon) (values.GetValue(sel - 1));
+            
         }
 
     }
@@ -69,7 +67,8 @@ namespace rock_scissor_paper_game
 
             foreach (Rule r in rules)
             {
-                if (r.weapon.Equals(player1.value) && r.defeats.Equals(player2.value))
+                if (r.weapon.Equals(player1.value) && 
+                    r.defeats.Equals(player2.value))
                     return player1.name;
             }
 
