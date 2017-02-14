@@ -10,12 +10,12 @@ namespace rock_scissor_paper_game
 
     public class Rule
     {
-        public Weapon AttackingHand;
+        public Weapon AttackingWeapon;
         public List<Weapon> Defeating;
 
-        public Rule(Weapon weapon, List<Weapon> Defeating)
+        public Rule(Weapon AttackingWeapon, List<Weapon> Defeating)
         {
-            this.AttackingHand = weapon;
+            this.AttackingWeapon = AttackingWeapon;
             this.Defeating = Defeating;
         }
     }
@@ -34,6 +34,19 @@ namespace rock_scissor_paper_game
 
     class Program
     {
+
+        /*
+        {
+            for j=0 to pc-1
+            {
+	            for p=1 to j-1 
+	            {
+	
+	            }
+            }
+            }
+        */
+
         /*
         List<Rule> defaultRules = new List<Rule>()
         {
@@ -91,7 +104,7 @@ namespace rock_scissor_paper_game
 
             foreach (Rule r in rules)
             {
-                if (r.AttackingHand.Equals(player1.weapon) &&
+                if (r.AttackingWeapon.Equals(player1.weapon) &&
                     (r.Defeating.Contains(player2.weapon)))
                     return player1.name;
             }
