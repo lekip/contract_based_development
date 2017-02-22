@@ -23,28 +23,44 @@ namespace rock_scissor_paper_game
     public class Player
     {
         public String name;
-        public Weapon weapon;
+        public int points=0;
 
         public Player(String Name)
         {
             this.name = Name;
-        }
-        
+        }        
     }
-
+    
     class Program
     {
+        
+        List<Tuple<int, int>> GenerateGameRounds(List<Player> players)
+        /*
+
+                Precondition:
+                Player list generated
+
+                Postcondition:
+                List of rounds defined
+
+                */
+
+        {
+            List<Tuple<int, int>> rounds = new List<Tuple<int, int>>();
+
+            for (int j = 0; j < players.Count(); j++)
+            {
+                for (int p = 0; p < j; p++)
+                {
+                    rounds.Add(new Tuple<int, int>(j, p));
+                }
+            }
+            return rounds;
+        }
 
         /*
         {
-            for j=0 to pc-1
-            {
-	            for p=1 to j-1 
-	            {
-	
-	            }
-            }
-            }
+            
         */
 
         /*
@@ -64,7 +80,7 @@ namespace rock_scissor_paper_game
             new Rule(Weapon.waterbaloon, new List<Weapon>() { Weapon.fire}),
         };        
         
-        public Weapon enterValue()
+        public Weapon selectWeapon()
         /*
 
         Precondition:
@@ -87,7 +103,7 @@ namespace rock_scissor_paper_game
         }
 
 
-        public String findWinner(Player player1, Player player2, List<Rule> rules)
+        public int findWinner(Weapon Weapon1, Weapon Weapon2, List<Rule> rules)
         /*
         Precondition: 
         player1.value is initialized, player2.value is initialized
@@ -97,47 +113,100 @@ namespace rock_scissor_paper_game
         Winner is found.
         */
         {
-            if (player1.weapon.Equals(player2.weapon))
-            {
-                return "draw";
-            };
-
             foreach (Rule r in rules)
             {
-                if (r.AttackingWeapon.Equals(player1.weapon) &&
-                    (r.Defeating.Contains(player2.weapon)))
-                    return player1.name;
+                if (r.AttackingWeapon.Equals(Weapon1) &&
+                    (r.Defeating.Contains(Weapon2)))
+                    return 1;
             }
 
-            return player2.name;
+            return 2;
         }
 
         static void Main(string[] args)
         {
             Program myProgram = new Program();
-            while (true)
-            {
-                // Escape static 
-                myProgram.run();
-            }
+            
+            // Escape static 
+            myProgram.run();
+            
         }
 
         void run()
         {
             Console.Clear();
-            Player player1 = new Player("Player 1");
-            Console.WriteLine("Choose " + player1.name + " value:");
-            player1.weapon=enterValue();
-            Console.Clear();
-            Console.WriteLine();
-            Player player2 = new Player("Player 2");
-            Console.WriteLine("Choose " + player2.name + " value:");
-            player2.weapon = enterValue();
-            Console.Clear();
-            Console.WriteLine("Value of " + player1.name + ": " + player1.weapon.ToString());
-            Console.WriteLine("Value of " + player2.name + ": " + player2.weapon.ToString());
+            List<Player> players = new List<Player>();
 
-            Console.WriteLine(findWinner(player1,player2, defaultRules));
+            Console.WriteLine("How many players?");
+            int PlayerCount = int.Parse(Console.ReadLine());
+
+            for (int nr = 0; nr < PlayerCount; nr++)
+            {
+                Console.Write("\n");
+                Console.WriteLine("Choose name for player #" + (nr+1));
+                String Name = Console.ReadLine();
+                Player player = new Player(Name);
+                players.Add(player);
+                
+            }
+
+            List<Tuple<int, int>> GameRounds = GenerateGameRounds(players);
+            Console.WriteLine("Number of rounds:"+ GameRounds.Count()+"\n\n");
+
+            for (int RoundNumber = 0; RoundNumber < GameRounds.Count(); RoundNumber++)
+            {
+                Console.Write("\n\n\n");
+
+                Console.WriteLine("Round #" +(RoundNumber+1));
+                String Name1 = players[GameRounds[RoundNumber].Item1].name;
+                String Name2 = players[GameRounds[RoundNumber].Item2].name;
+
+
+                Console.WriteLine(Name1 +" vs "+Name2);
+
+                Weapon Weapon1;
+                Weapon Weapon2;
+
+                do
+                {
+                    Console.WriteLine("Chooce weapon for "+ Name1);
+                    Weapon1 = selectWeapon();
+                    Console.WriteLine("Chooce weapon for " + Name2);
+                    Weapon2 = selectWeapon();
+
+                    if (Weapon1.Equals(Weapon2))
+                    {
+                        Console.WriteLine("Same weapon selected - please try again");
+                    }
+                } while (Weapon1.Equals(Weapon2));
+
+                Console.Write("\n");
+                Console.WriteLine(Name1 + " selected " + Weapon1.ToString());
+                Console.WriteLine(Name2 + " selected " + Weapon2.ToString());
+                
+                int Winner = findWinner(Weapon1, Weapon2, defaultRules);
+                if (Winner == 1)
+                {
+                    Console.WriteLine(Name1 + " won!");
+                    players[GameRounds[RoundNumber].Item1].points++;
+                }
+                if (Winner == 2)
+                {
+                    Console.WriteLine(Name2 + " won!");
+                    players[GameRounds[RoundNumber].Item2].points++;
+                }                
+            }
+            Console.Write("\n");
+
+            Console.WriteLine("The game is over");
+
+            List<Player> SortedList = players.OrderByDescending(x => x.points).ToList();
+            Console.WriteLine("Highscore:");
+            Console.WriteLine(("Points ").PadRight(10,' ')+"Name ");
+            for (int nr = 0; nr < SortedList.Count(); nr++)
+            {
+                Console.WriteLine(SortedList[nr].points.ToString().PadRight(10, ' ') + SortedList[nr].name);
+            }
 
             Console.ReadLine();
         }
