@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 namespace rock_scissor_paper_game
 {
+
+    public class Player
+    {
+        public String name;
+        public int points = 0;
+
+        public Player(String Name)
+        {
+            this.name = Name;
+        }
+    }
+
     public enum Weapon { scissor, rock, paper, fire, waterbaloon };
 
     public class Rule
@@ -20,20 +32,46 @@ namespace rock_scissor_paper_game
         }
     }
 
-    public class Player
-    {
-        public String name;
-        public int points=0;
-
-        public Player(String Name)
-        {
-            this.name = Name;
-        }        
-    }
-    
     class Program
     {
-        
+        List<Rule> DefaultRules = new List<Rule>()
+        {
+            new Rule(Weapon.scissor, new List<Weapon>() { Weapon.paper, Weapon.waterbaloon } ),
+            new Rule(Weapon.paper, new List<Weapon>() { Weapon.rock, Weapon.waterbaloon }),
+            new Rule(Weapon.rock, new List<Weapon>() { Weapon.scissor, Weapon.waterbaloon }),
+            new Rule(Weapon.fire, new List<Weapon>() { Weapon.paper, Weapon.rock, Weapon.scissor}),
+            new Rule(Weapon.waterbaloon, new List<Weapon>() { Weapon.fire}),
+        };
+
+        /*
+        List<Rule> BoringRules = new List<Rule>()
+        {
+            new Weapon(Weapon.scissor, new List<Weapon>() { HandType.paper } ),
+            new Weapon(Weapon.paper, new List<Weapon>() { HandType.rock }),
+            new Weapon(Weapon.rock, new List<Weapon>() { HandType.scissor } )
+        };
+        */
+
+        public int findWinner(Weapon Weapon1, Weapon Weapon2, List<Rule> rules)
+        /*
+        Precondition: 
+        'Weapon1', 'Weapon2' is defined
+        'rules' contains all rules
+
+        Postcondition:
+        Winner is found.
+        */
+        {
+            foreach (Rule r in rules)
+            {
+                if (r.AttackingWeapon.Equals(Weapon1) &&
+                    (r.Defeating.Contains(Weapon2)))
+                    return 1;
+            }
+
+            return 2;
+        }
+
         List<Tuple<int, int>> GenerateGameRounds(List<Player> players)
         /*
 
@@ -58,28 +96,6 @@ namespace rock_scissor_paper_game
             return rounds;
         }
 
-        /*
-        {
-            
-        */
-
-        /*
-        List<Rule> defaultRules = new List<Rule>()
-        {
-            new Weapon(Weapon.scissor, new List<Weapon>() { HandType.paper } ),
-            new Weapon(Weapon.paper, new List<Weapon>() { HandType.rock }),
-            new Weapon(Weapon.rock, new List<Weapon>() { HandType.scissor } )
-        };
-        */
-        List<Rule> defaultRules = new List<Rule>()
-        {
-            new Rule(Weapon.scissor, new List<Weapon>() { Weapon.paper, Weapon.waterbaloon } ),
-            new Rule(Weapon.paper, new List<Weapon>() { Weapon.rock, Weapon.waterbaloon }),
-            new Rule(Weapon.rock, new List<Weapon>() { Weapon.scissor, Weapon.waterbaloon }),
-            new Rule(Weapon.fire, new List<Weapon>() { Weapon.paper, Weapon.rock, Weapon.scissor}),
-            new Rule(Weapon.waterbaloon, new List<Weapon>() { Weapon.fire}),
-        };        
-        
         public Weapon selectWeapon()
         /*
 
@@ -100,27 +116,6 @@ namespace rock_scissor_paper_game
 
             int sel = int.Parse(Console.ReadKey(true).KeyChar.ToString());
             return (Weapon)(values.GetValue(sel - 1));
-        }
-
-
-        public int findWinner(Weapon Weapon1, Weapon Weapon2, List<Rule> rules)
-        /*
-        Precondition: 
-        player1.value is initialized, player2.value is initialized
-        'rules' contains all rules
-
-        Postcondition:
-        Winner is found.
-        */
-        {
-            foreach (Rule r in rules)
-            {
-                if (r.AttackingWeapon.Equals(Weapon1) &&
-                    (r.Defeating.Contains(Weapon2)))
-                    return 1;
-            }
-
-            return 2;
         }
 
         static void Main(string[] args)
@@ -184,7 +179,7 @@ namespace rock_scissor_paper_game
                 Console.WriteLine(Name1 + " selected " + Weapon1.ToString());
                 Console.WriteLine(Name2 + " selected " + Weapon2.ToString());
                 
-                int Winner = findWinner(Weapon1, Weapon2, defaultRules);
+                int Winner = findWinner(Weapon1, Weapon2, DefaultRules);
                 if (Winner == 1)
                 {
                     Console.WriteLine(Name1 + " won!");
