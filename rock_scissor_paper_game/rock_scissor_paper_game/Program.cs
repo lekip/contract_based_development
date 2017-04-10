@@ -83,22 +83,22 @@ namespace rock_scissor_paper_game
             return 2;
         }
 
-        List<Tuple<int, int>> GenerateGameRounds(int PlayerCount)
+        List<Tuple<int, int>> GenerateGames(int PlayerCount)
         /*  Precondition:
             Player list contains 2 players at minimum
             Postcondition:
-            List of rounds defined  */
+            List of games defined  */
         {
-            List<Tuple<int, int>> rounds = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> games = new List<Tuple<int, int>>();
 
             for (int j = 0; j < PlayerCount; j++)
             {
                 for (int p = 0; p < j; p++)
                 {
-                    rounds.Add(new Tuple<int, int>(j, p));
+                    games.Add(new Tuple<int, int>(j, p));
                 }
             }
-            return rounds;
+            return games;
         }
 
         public Weapon selectWeapon()
@@ -145,15 +145,15 @@ namespace rock_scissor_paper_game
                 
             }
 
-            List<Tuple<int, int>> GameRounds = GenerateGameRounds(players.Count());
-            Console.WriteLine("Number of rounds:"+ GameRounds.Count()+"\n\n");
+            List<Tuple<int, int>> Games = GenerateGames(players.Count());
+            Console.WriteLine("Number of games:"+ Games.Count()+"\n\n");
 
-            for (int RoundNumber = 0; RoundNumber < GameRounds.Count(); RoundNumber++)
+            for (int GameNumber = 0; GameNumber < Games.Count(); GameNumber++)
             {
                 Console.Write("\n\n\n");
-                Console.WriteLine("Round #" +(RoundNumber+1));
-                String Name1 = players[GameRounds[RoundNumber].Item1].Name;
-                String Name2 = players[GameRounds[RoundNumber].Item2].Name;
+                Console.WriteLine("Game #" +(GameNumber+1));
+                String Name1 = players[Games[GameNumber].Item1].Name;
+                String Name2 = players[Games[GameNumber].Item2].Name;
                 Console.WriteLine(Name1 +" vs "+Name2);
 
                 Weapon Weapon1;
@@ -180,12 +180,12 @@ namespace rock_scissor_paper_game
                 if (Winner == 1)
                 {
                     Console.WriteLine(Name1 + " won!");
-                    players[GameRounds[RoundNumber].Item1].Points++;
+                    players[Games[GameNumber].Item1].Points++;
                 }
                 if (Winner == 2)
                 {
                     Console.WriteLine(Name2 + " won!");
-                    players[GameRounds[RoundNumber].Item2].Points++;
+                    players[Games[GameNumber].Item2].Points++;
                 }                
             }
             Console.Write("\n");
